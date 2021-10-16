@@ -51,17 +51,3 @@ int Histogram :: getBins()
 {
     return bins;
 }
-
-ostream &operator<<(ostream &out, Histogram &hist){
-	for (int i = 0; i < hist.getBins() + 1; i++)
-    {
-        out << hist.getBinValues()[i] << ",";
-    }
-
-    for (int i = 0; i < hist.getBins(); i++)
-    {
-        out << hist.getBinFrequencies()[i] << ",";
-    }
-    
-	return out;
-}

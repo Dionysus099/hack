@@ -2,19 +2,15 @@
 #include<iostream>
 using namespace std;
 #include "DataSequence.h"
-#include "FiveNumberSummary.h"
 
 DataSequence :: DataSequence(float *arr, int n)
 {
-    this->n = n;
     arr_new = new float[n];
-    fns = new FiveNumberSummary();
 
     for(int i=0; i<n; i++)
     {
         arr_new[i] = arr[i];
     }
-    FNS();
 }
 
 DataSequence :: DataSequence(const DataSequence &DS)
@@ -29,12 +25,11 @@ DataSequence :: DataSequence(const DataSequence &DS)
     }
 
     Sort_Array(arr_new, n);
-    FNS();
 }
 
 DataSequence :: ~DataSequence()
 {
-    // delete []arr_new;
+    delete []arr_new;
 }
 
 
@@ -105,10 +100,9 @@ float DataSequence :: getMaximum(float *arr, int n)
     return Maximum;
 }
 
-void DataSequence :: bin_values(Histogram &H, float *arr, int n, int bins)
+void DataSequence :: bin_values(Histogram H, float *arr, int n, int bins)
 {
     float min = getMinimum(arr, n);
-
     float max = getMaximum(arr, n);
 
     if(n == 1)
@@ -118,9 +112,7 @@ void DataSequence :: bin_values(Histogram &H, float *arr, int n, int bins)
     }
 
     float size = (max - min)/bins;
-    
     float *tempo = new float[bins+1];
-    
     tempo[0] = min;
 
     for(int i=1; i<bins+1; i++)
@@ -129,9 +121,10 @@ void DataSequence :: bin_values(Histogram &H, float *arr, int n, int bins)
     }
 
     H.setBinValues(tempo, bins+1);
+    delete []tempo;
 }
 
-void DataSequence :: bin_frequencies(Histogram &H, float *arr, int n, int bins)
+void DataSequence :: bin_frequencies(Histogram H, float *arr, int n, int bins)
 {
     float *tempo = new float[bins]; 
     
@@ -159,45 +152,14 @@ void DataSequence :: bin_frequencies(Histogram &H, float *arr, int n, int bins)
 
     H.setBinFrequency(tempo, bins);
 
+    delete []tempo;
 }
 
-void DataSequence :: Histo(Histogram &H, float *arr, int n, int bins)
+Histogram DataSequence :: Histo(float *arr, int n, int bins)
 {
+    Histogram H(bins);
     bin_values(H, arr, n, bins);
     bin_frequencies(H, arr, n, bins);
-}
 
-void DataSequence :: FNS()
-{
-    fns->sets_min(getMinimum(arr_new, n));
-	fns->sets_max(getMaximum(arr_new, n));
-	fns->setmed(getMedian(arr_new, n));
-
-	if(n%2 == 0){
-		fns->setlq(getMedian(arr_new, n/2));
-		fns->setuq(getMedian(arr_new + n/2, n/2));
-	}
-	else{
-		fns->setlq(getMedian(arr_new, n/2+1));
-		fns->setuq(getMedian(arr_new + n/2, n/2+1));
-	}
-}
-
-void DataSequence :: addValue(float value, Histogram &H){
-	n += 1;
-    float * arr = new float[n];
-    for(int i=0;i<n-1;i++)arr[i] = arr_new[i];
-    arr[n-1] = value;
-	delete[] arr_new;
-    // arr_new = new float[n];
-    // arr_new[n-1] = value;
-    arr_new = arr;
-	Sort_Array(arr_new, n);
-	FNS();
-	Histo(H, arr_new, n, H.getBins());
-}
-
-ostream &operator<<(ostream &out, DataSequence &dataSequence){
-	out<<*(dataSequence.fns);
-	return out;
+    return H;
 }

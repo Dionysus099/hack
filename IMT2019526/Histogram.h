@@ -18,6 +18,5 @@ class Histogram
         float *getBinValues();
         float *getBinFrequencies();
         int getBins();
-        friend ostream &operator<<(ostream &out, Histogram &hist);
 };
 #endif
