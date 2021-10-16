@@ -1,184 +1,95 @@
-#include <iostream>
-#include <cstring>
+#include<iostream>
+#include<bits/stdc++.h> 
 using namespace std;
-#include "BinomialDistribution.h"
+#include "DataSequence.h"
 #include "Histogram.h"
-
-double conditionchecker1(string s)
-{
-    int count=0;
-
-    for(int i=0; i<s.length(); i++)
-    {
-        if((int)s[i]>=48 && (int)s[i]<=57)
-        {
-
-        }
-        else if(s[i]=='.')
-        {
-            count++;
-        }
-
-        else
-        {
-            return 0.0;
-        }  
-    }
-
-    if(count != 1)
-    {
-        return 0;
-    }
-
-    double d = stod(s);
-    
-    if(d<=0 || d>=1)
-    {
-        return 0.0;
-    }
-    
-    return d;
-}
-
-int conditionchecker(string s)
-{
-    for(int i=0; i<s.length(); i++)
-    {
-        if((int)s[i]>=48 && (int)s[i]<=57)
-        {
-
-        }
-
-        else
-        {
-            return 0;
-        }
-        
-    }
-
-    int n = stoi(s);
-    return n;
-}
-
-int checker(string str)
-{
-    for(int i=0; i<str.length(); i++)
-    {
-        if(str[i] == ' ' || str[i]=='.')
-        {
-
-        }
-
-        else if((int)str[i] >= 48 && (int)str[i] <= 57)
-        {
-
-        }
-
-        else
-        {
-            return 0;
-        }
-        
-    }
-    return 1;
-}
-
-void split(string substrs[], string str, char c)
-{
-    string word = "";
-
-    int i = 0;
-    
-    for (auto x : str)
-    {
-        if (x == c)
-        {
-            substrs[i++] = word;
-            word = "";
-        }
-    
-        else
-        {
-            word = word + x;
-        }
-    }
-
-    substrs[i] = word;
-}
 
 int main()
 {
-    string str;
+    int size;
+    std::cin >> size;
 
-    int n;
-    
-    if(checker(str) == 0)
-    {
-        std::cout<< "-1";
-        return 0;
-    }
-    
-    double p1;
-    double p2;
-    
-    getline(cin, str);
-    
-    string spacestrs[4];
-    
-    split(spacestrs, str, ' ');
-    
-    if(spacestrs[2] == "\0")
-    {
-        std::cout<< "-1";
-        return 0;
-    }
-    
-    if(spacestrs[3] != "\0")
-    {
-        std::cout<< "-1";
-        return 0;
-    }
-    
-    if(conditionchecker(spacestrs[0]) == 0)
-    {
-        std::cout<< "-1";
-        return 0;
-    }
-    
-    else
-    {
-        n = conditionchecker(spacestrs[0]);
-    }
-    
-    if(conditionchecker1(spacestrs[1]) == 0)
-    {
-        std::cout<< "-1";
-        return 0;
-    }
-    
-    else
-    {
-        p1 = conditionchecker1(spacestrs[1]);
-    }
-    
-    if(conditionchecker1(spacestrs[2]) == 0)
-    {
-        std::cout<< "-1";
-        return 0;
-    }
-    
-    else
-    {
-        p2 = conditionchecker1(spacestrs[2]);
-    }
-    
-    BinomialDistribution *BiDi1 = new BinomialDistribution(n, p1);
-    BinomialDistribution *BiDi2 = new BinomialDistribution(n, p2);
+    int p1, p2;
 
-    Histogram *H1 = BiDi1;
-    Histogram *H2 = BiDi2;
+    std::cin >> p1;
+    if (p1 != -1)
+    {
+        std::cout << "-1" ;
+        return 0;
+    }
 
-    distance(*H1, *H2);
+    float seq_val[size];
+    char c;
+
+    for (int i=0; i<size-1; i++)
+    {
+        std::cin >> seq_val[i];
+        std::cin >> c;
+
+        if (c != ',' || seq_val[i] <= 0)
+        {
+            std::cout << "-1" ;
+            return 0;
+        }
+        
+    }
+
+    std::cin >> seq_val[size-1];
+    if (seq_val[size-1] <= 0)
+    {
+        std::cout << "-1" ;
+        return 0;
+    }
+    
+    std::cin >> p2;
+    if (p2 != -1)
+    {
+        std::cout << "-1" ;
+        return 0;
+    }
+
+    int Nb;
+    std::cin >> Nb;
+    // if(Nb <= 0)
+    // {
+    //     std::cout << "-1";
+    // }
+
+    char arr[5];
+    fgets(arr, 5, stdin);
+    
+    if(arr[1] != '-' || arr[2] != '1') 
+    {
+        std::cout << "-1" ;
+        return 0;
+    }
+
+    DataSequence DS(seq_val,size);
+    Histogram H(size);
+
+    std :: cout.precision(4);
+    std :: cout << std :: fixed;
+    
+    std :: cout << floor((floor(DS.getMinimum(seq_val, size)*1e5)*1e-5+1e-5)*1e4)*1e-4 << " -1 " << floor((floor(DS.getMean(seq_val, size)*1e5)*1e-5+1e-5)*1e4)*1e-4 << " -1 " << floor((floor(DS.getMedian(seq_val, size)*1e5)*1e-5+1e-5)*1e4)*1e-4 << " -1 " << floor((floor(DS.getMaximum(seq_val, size)*1e5)*1e-5+1e-5)*1e4)*1e-4 << " -1 ";
+    
+    H = DS.Histo(seq_val, size, Nb);
+    
+    float *f1 = H.getBinValues();
+    float *f2 = H.getBinFrequencies();
+    
+    for(int i=0; i<Nb; i++)
+    {
+        std :: cout << floor((floor((f1[i])*1e5)*1e-5+1e-5)*1e4)*1e-4 << ",";
+    }
+
+    std :: cout << floor((floor((f1[Nb])*1e5)*1e-5+1e-5)*1e4)*1e-4 << " -1 ";
+    
+    for(int i=0; i<Nb-1; i++)
+    {
+        std :: cout << (int)f2[i] << ",";
+    }
+    
+    std :: cout << (int)f2[Nb-1] << " -1 ";
 
     return 0;
 }
